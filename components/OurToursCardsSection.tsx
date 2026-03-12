@@ -32,6 +32,30 @@ const TOUR_ITEMS: CardStackItem[] = [
 export default function OurToursCardsSection() {
   const [activeIndex, setActiveIndex] = useState(0);
 
+  // track responsive card dimensions
+  const [cardSize, setCardSize] = useState({ width: 400, height: 500 });
+  const [maxVisible, setMaxVisible] = useState(3);
+
+  React.useEffect(() => {
+    function update() {
+      const w = window.innerWidth;
+      // 80% of viewport width but no more than 400
+      const width = Math.min(400, w * 0.8);
+      const height = width * 1.25;
+      setCardSize({ width, height });
+      if (w < 640) {
+        setMaxVisible(1);
+      } else if (w < 1024) {
+        setMaxVisible(2);
+      } else {
+        setMaxVisible(3);
+      }
+    }
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
   const handleIndexChange = (index: number) => {
     setActiveIndex(index);
   };
@@ -58,9 +82,9 @@ export default function OurToursCardsSection() {
           <CardStack
             items={TOUR_ITEMS}
             onChangeIndex={handleIndexChange}
-            cardWidth={400}
-            cardHeight={500}
-            maxVisible={3}
+            cardWidth={cardSize.width}
+            cardHeight={cardSize.height}
+            maxVisible={maxVisible}
           />
         </div>
 
