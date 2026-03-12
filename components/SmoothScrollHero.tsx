@@ -1,0 +1,110 @@
+"use client";
+import * as React from "react";
+import {
+	motion,
+	useMotionTemplate,
+	useScroll,
+	useTransform,
+} from "framer-motion";
+
+interface iISmoothScrollHeroProps {
+	scrollHeight?: number;
+	desktopImage?: string;
+	mobileImage?: string;
+}
+
+const SmoothScrollHeroBackground: React.FC<iISmoothScrollHeroProps & { scrollYProgress: any }> = ({
+	desktopImage,
+	mobileImage,
+	scrollYProgress,
+}) => {
+	// 40% zoom means we clip 30% from each side.
+	// As we scroll to 80% of the section, it expands to 100%.
+	const clipStart = useTransform(scrollYProgress, [0, 0.8], [30, 0]);
+	const clipEnd = useTransform(scrollYProgress, [0, 0.8], [70, 100]);
+
+	const clipPath = useMotionTemplate`polygon(${clipStart}% ${clipStart}%, ${clipEnd}% ${clipStart}%, ${clipEnd}% ${clipEnd}%, ${clipStart}% ${clipEnd}%)`;
+
+	// Parallax effect on the background image itself
+	const backgroundSize = useTransform(scrollYProgress, [0, 1], ["140%", "100%"]);
+
+	return (
+		<motion.div
+			className="absolute inset-0 w-full h-full bg-black/90"
+			style={{
+				clipPath,
+				willChange: "transform, opacity, clip-path",
+			}}
+		>
+			<motion.div
+				className="absolute inset-0 md:hidden"
+				style={{
+					backgroundImage: `url(${mobileImage})`,
+					backgroundSize,
+					backgroundPosition: "center",
+					backgroundRepeat: "no-repeat",
+				}}
+			/>
+			<motion.div
+				className="absolute inset-0 hidden md:block"
+				style={{
+					backgroundImage: `url(${desktopImage})`,
+					backgroundSize,
+					backgroundPosition: "center",
+					backgroundRepeat: "no-repeat",
+				}}
+			/>
+			{/* Optional overlay for better text readability later */}
+			<div className="absolute inset-0 bg-black/30" />
+		</motion.div>
+	);
+};
+
+const SmoothScrollHero: React.FC<iISmoothScrollHeroProps> = ({
+	scrollHeight = 2000,
+	desktopImage = "https://images.pexels.com/photos/32630752/pexels-photo-32630752.jpeg", // A himalayan/mountain looking image
+	mobileImage = "https://images.pexels.com/photos/32630752/pexels-photo-32630752.jpeg",
+}) => {
+	const containerRef = React.useRef<HTMLDivElement>(null);
+	const { scrollYProgress } = useScroll({
+		target: containerRef,
+		offset: ["start start", "end end"],
+	});
+
+	// The text fades in during the last 20% of the scroll
+	const textOpacity = useTransform(scrollYProgress, [0.8, 1], [0, 1]);
+	const textY = useTransform(scrollYProgress, [0.8, 1], [40, 0]);
+
+	return (
+		<div
+			ref={containerRef}
+			style={{ height: `${scrollHeight}px` }}
+			className="relative w-full bg-black"
+		>
+			<div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
+				<SmoothScrollHeroBackground
+					scrollYProgress={scrollYProgress}
+					desktopImage={desktopImage}
+					mobileImage={mobileImage}
+				/>
+
+				<motion.div
+					style={{ opacity: textOpacity, y: textY }}
+					className="relative z-10 text-center px-4"
+				>
+					<h1
+						className="text-4xl md:text-7xl lg:text-8xl text-white font-display italic tracking-tight uppercase origin-center"
+						style={{ textShadow: "0px 4px 20px rgba(0,0,0,0.5)" }}
+					>
+						Hardened for<br />the Himalayas
+					</h1>
+					<p className="text-white/80 mt-6 text-sm md:text-lg tracking-widest uppercase">
+						Premium Rental Equipment
+					</p>
+				</motion.div>
+			</div>
+		</div>
+	);
+};
+
+export default SmoothScrollHero;
