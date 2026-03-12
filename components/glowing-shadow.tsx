@@ -74,6 +74,9 @@ export function GlowingShadow({ children }: GlowingShadowButtonProps) {
           --card-width: 35vw;
           --border-width: 2px;
           --bg-size: 1;
+          width: 100%;
+          max-width: 360px;
+          overflow: hidden;
           --hue: 0;
           --hue-speed: 1;
           --rotate: 0;

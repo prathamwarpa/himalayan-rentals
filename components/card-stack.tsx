@@ -285,6 +285,7 @@ export function CardStack<T extends CardStackItem>({
                     height: cardHeight,
                     zIndex,
                     transformStyle: "preserve-3d",
+                    touchAction: "pan-y", // prevent horizontal drag from scrolling page
                   }}
                   initial={
                     reduceMotion
