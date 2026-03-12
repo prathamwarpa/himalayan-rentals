@@ -15,14 +15,14 @@ export function TourInclusionsSection({ inclusions, exclusions }: TourInclusions
           What&apos;s Included
         </h2>
         <div className="grid md:grid-cols-2 gap-12 justify-items-center">
-          {/* Inclusions with glow */}
+          {/* Inclusions (plain container, no glow) */}
           <div className="w-full flex flex-col items-center gap-4">
             <h3 className="text-xl font-bold text-white self-start flex items-center gap-3">
               <span className="w-2 h-2 rounded-full bg-white inline-block" />
               Inclusions
             </h3>
-            <GlowingShadow>
-              <ul className="space-y-3 w-full">
+            <div className="w-full bg-black/40 rounded-lg p-6">
+              <ul className="space-y-3 w-full pt-4 overflow-visible">
                 {inclusions.map((item) => (
                   <li key={item} className="flex items-start gap-3 text-white/80 text-sm font-body">
                     <span className="text-white mt-0.5 flex-shrink-0">✓</span>
@@ -30,17 +30,17 @@ export function TourInclusionsSection({ inclusions, exclusions }: TourInclusions
                   </li>
                 ))}
               </ul>
-            </GlowingShadow>
+            </div>
           </div>
 
-          {/* Exclusions with glow */}
+          {/* Exclusions (plain container, no glow) */}
           <div className="w-full flex flex-col items-center gap-4">
             <h3 className="text-xl font-bold text-white self-start flex items-center gap-3">
               <span className="w-2 h-2 rounded-full bg-white/30 inline-block" />
               Exclusions
             </h3>
-            <GlowingShadow>
-              <ul className="space-y-3 w-full">
+            <div className="w-full bg-black/40 rounded-lg p-6">
+              <ul className="space-y-3 w-full pt-4 overflow-visible">
                 {exclusions.map((item) => (
                   <li key={item} className="flex items-start gap-3 text-white/40 text-sm font-body">
                     <span className="text-white/30 mt-0.5 flex-shrink-0">✕</span>
@@ -48,7 +48,7 @@ export function TourInclusionsSection({ inclusions, exclusions }: TourInclusions
                   </li>
                 ))}
               </ul>
-            </GlowingShadow>
+            </div>
           </div>
         </div>
       </div>

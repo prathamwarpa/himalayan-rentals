@@ -197,7 +197,8 @@ export function CardStack<T extends CardStackItem>({
 
   return (
     <div
-      className={cn("w-full", className)}
+      className={cn("w-full overflow-hidden", className)}
+      style={{ width: "100%" }}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
@@ -219,7 +220,7 @@ export function CardStack<T extends CardStackItem>({
         />
 
         <div
-          className="absolute inset-0 flex items-end justify-center"
+          className="absolute inset-0 flex items-end justify-center w-full"
           style={{
             perspective: `${perspectivePx}px`,
           }}
@@ -230,8 +231,7 @@ export function CardStack<T extends CardStackItem>({
               const abs = Math.abs(off);
               const visible = abs <= maxOffset;
 
-              // hide far-away cards cleanly
-              if (!visible) return null;
+              // keep all cards in DOM; hide via opacity/visibility when out of range
 
               // fan geometry
               const rotateZ = off * stepDeg;
@@ -247,6 +247,12 @@ export function CardStack<T extends CardStackItem>({
               const rotateX = isActive ? 0 : tiltXDeg;
 
               const zIndex = 100 - abs;
+
+              // determine visibility styles for cards outside of maxOffset range
+              const hidden = !visible;
+              const visibilityStyle: any = hidden
+                ? { opacity: 0, visibility: "hidden", pointerEvents: "none" }
+                : { opacity: 1, visibility: "visible" };
 
               // drag only on the active card
               const dragProps = isActive
@@ -286,12 +292,13 @@ export function CardStack<T extends CardStackItem>({
                     zIndex,
                     transformStyle: "preserve-3d",
                     touchAction: "pan-y", // prevent horizontal drag from scrolling page
+                    ...visibilityStyle,
                   }}
                   initial={
                     reduceMotion
                       ? false
                       : {
-                          opacity: 0,
+                          opacity: hidden ? 0 : 0,
                           y: y + 40,
                           x,
                           rotateZ,
@@ -300,7 +307,7 @@ export function CardStack<T extends CardStackItem>({
                         }
                   }
                   animate={{
-                    opacity: 1,
+                    opacity: hidden ? 0 : 1,
                     x,
                     y: y + lift,
                     rotateZ,

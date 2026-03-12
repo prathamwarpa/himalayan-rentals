@@ -63,7 +63,7 @@ const SmoothScrollHeroBackground: React.FC<iISmoothScrollHeroProps & { scrollYPr
 const SmoothScrollHero: React.FC<iISmoothScrollHeroProps> = ({
 	scrollHeight = 2000,
 	desktopImage = "https://images.pexels.com/photos/32630752/pexels-photo-32630752.jpeg", // A himalayan/mountain looking image
-	mobileImage = "https://images.pexels.com/photos/32630752/pexels-photo-32630752.jpeg",
+	mobileImage = "https://images.pexels.com/photos/33792550/pexels-photo-33792550.jpeg",
 }) => {
 	const containerRef = React.useRef<HTMLDivElement>(null);
 	const { scrollYProgress } = useScroll({

@@ -122,8 +122,26 @@
     }
   body {
     @apply bg-background text-foreground;
+    /* apply grainy background directly to avoid ordering issues with Tailwind JIT */
+    background-color: #000;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22100%25%22%20height%3D%22100%25%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cfilter%20id%3D%22noise%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%222%22%20numOctaves%3D%226%22%20stitchTiles%3D%22stitch%22/%3E%3C/filter%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20filter%3D%22url(%23noise)%22/%3E%3C/svg%3E");
+    background-blend-mode: overlay;
+    background-size: cover;
     font-family: 'EB Garamond', serif;
     }
+
+/* global pseudo-element overlay in case further fine‑tuning is needed */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22100%25%22%20height%3D%22100%25%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cfilter%20id%3D%22noise%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%222%22%20numOctaves%3D%226%22%20stitchTiles%3D%22stitch%22/%3E%3C/filter%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20filter%3D%22url(%23noise)%22/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  opacity: 0.15;
+  z-index: 50;
+}
+
   html {
     @apply font-sans;
     }
@@ -145,5 +163,41 @@
   }
   .font-body {
     font-family: 'EB Garamond', serif;
+  }
+
+  /* grainy black background utility used in BattleReadyMachines */
+  .bg-grainy-black {
+    background-color: #000;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22100%25%22%20height%3D%22100%25%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cfilter%20id%3D%22noise%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%222%22%20numOctaves%3D%226%22%20stitchTiles%3D%22stitch%22/%3E%3C/filter%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20filter%3D%22url(%23noise)%22/%3E%3C/svg%3E");
+    background-blend-mode: overlay;
+    background-size: cover;
+  }
+
+  /* utility for fixed background with iOS Safari fallback */
+  .bg-fixed-ios {
+    background-attachment: fixed;
+    -webkit-background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    will-change: transform;
+  }
+  /* fallback implementation for iOS where fixed is ignored */
+  @supports (-webkit-overflow-scrolling: touch) {
+    .bg-fixed-ios {
+      background: none !important;
+      position: relative;
+    }
+    .bg-fixed-ios::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: inherit;
+      background-size: inherit;
+      background-position: inherit;
+      background-repeat: inherit;
+      z-index: -1;
+      will-change: transform;
+    }
   }
 }

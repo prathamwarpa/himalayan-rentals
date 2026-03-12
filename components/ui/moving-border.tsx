@@ -32,18 +32,17 @@ export function Button({
   return (
     <Component
       className={cn(
-        "bg-transparent relative text-xl  h-16 w-40 p-[1px] overflow-hidden ",
+        "bg-transparent relative text-xl h-16 w-40 p-[1px]",
         containerClassName
       )}
       style={{
         borderRadius: borderRadius,
+        overflow: "visible",
       }}
       {...otherProps}
     >
-      <div
-        className="absolute inset-0"
-        style={{ borderRadius: `calc(${borderRadius} * 0.96)` }}
-      >
+      {/* moving border sits above the background but below content */}
+      <div className="absolute inset-0 pointer-events-none overflow-visible">
         <MovingBorder duration={duration} rx="30%" ry="30%">
           <div
             className={cn(
@@ -56,7 +55,7 @@ export function Button({
 
       <div
         className={cn(
-          "relative bg-slate-900/[0.8] border border-slate-800 backdrop-blur-xl text-white flex items-center justify-center w-full h-full text-sm antialiased",
+          "relative bg-slate-900/[0.8] border border-slate-800 backdrop-blur-xl text-white flex items-center justify-center w-full h-full text-sm antialiased p-2",
           className
         )}
         style={{
@@ -84,8 +83,11 @@ export const MovingBorder = ({
 }) => {
   const pathRef = useRef<any>(null);
   const progress = useMotionValue<number>(0);
+  const reduceMotion = useReducedMotion();
 
+  // if reduced-motion is preferred, skip the animation entirely
   useAnimationFrame((time) => {
+    if (reduceMotion) return;
     const length = pathRef.current?.getTotalLength();
     if (length) {
       const pxPerMillisecond = length / duration;
@@ -109,7 +111,7 @@ export const MovingBorder = ({
       <svg
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="none"
-        className="absolute h-full w-full"
+        className="absolute h-full w-full overflow-visible"
         width="100%"
         height="100%"
         {...otherProps}
@@ -130,6 +132,8 @@ export const MovingBorder = ({
           left: 0,
           display: "inline-block",
           transform,
+          willChange: "transform",
+          WebkitWillChange: "transform",
         }}
       >
         {children}

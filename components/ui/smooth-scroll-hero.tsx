@@ -6,6 +6,7 @@ import {
 	useMotionTemplate,
 	useScroll,
 	useTransform,
+	useReducedMotion,
 } from "framer-motion";
 
 interface iISmoothScrollHeroProps {
@@ -48,6 +49,13 @@ const SmoothScrollHeroBackground: React.FC<
 	finalClipPercentage,
 }) => {
 	const {scrollY} = useScroll();
+	const reduceMotion = useReducedMotion();
+
+	// iOS Safari often ignores background-attachment: fixed; the
+	// `.bg-fixed-ios` utility defined in globals.css adds a ::before
+	// fallback. We keep the image container in the same element so
+	// the clipping animation does not affect the static background.
+
 
 	const clipStart = useTransform(
 		scrollY,
@@ -65,12 +73,15 @@ const SmoothScrollHeroBackground: React.FC<
 	const backgroundSize = useTransform(
 		scrollY,
 		[0, scrollHeight + 500],
-		["170%", "100%"],
+		reduceMotion ? ["100%", "100%"] : ["170%", "100%"],
 	);
+
+	// if reduced motion is requested we simply keep the background static
+
 
 	return (
 		<motion.div
-			className="sticky top-0 h-screen w-full bg-black"
+			className="sticky top-0 h-screen w-full bg-black bg-fixed-ios"
 			style={{
 				clipPath,
 				willChange: "transform, opacity",
@@ -78,22 +89,24 @@ const SmoothScrollHeroBackground: React.FC<
 		>
 			{/* Mobile background */}
 			<motion.div
-				className="absolute inset-0 md:hidden"
+				className="absolute inset-0 md:hidden bg-fixed-ios"
 				style={{
 					backgroundImage: `url(${mobileImage})`,
 					backgroundSize,
 					backgroundPosition: "center",
 					backgroundRepeat: "no-repeat",
+					willChange: "transform",
 				}}
 			/>
 			{/* Desktop background */}
 			<motion.div
-				className="absolute inset-0 hidden md:block"
+				className="absolute inset-0 hidden md:block bg-fixed-ios"
 				style={{
 					backgroundImage: `url(${desktopImage})`,
 					backgroundSize,
 					backgroundPosition: "center",
 					backgroundRepeat: "no-repeat",
+					willChange: "transform",
 				}}
 			/>
 		</motion.div>
@@ -114,7 +127,7 @@ const SmoothScrollHeroBackground: React.FC<
 }) => {
 	return (
 		<div
-			style={{height: `calc(${scrollHeight}px + 100vh)`}}
+			style={{height: `calc(${scrollHeight}px + 100dvh)`}}
 			className="relative w-full"
 		>
 			<SmoothScrollHeroBackground

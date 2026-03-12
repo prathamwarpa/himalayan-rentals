@@ -37,11 +37,11 @@ const Card: FC<iCardProps> = ({
 	src,
 }) => {
 	return (
-		<div className="h-screen flex items-center justify-center sticky top-0 md:p-0 px-4">
+		<div className="h-[100dvh] flex items-center justify-center sticky top-0 md:p-0 px-4 sm:px-2" style={{ touchAction: 'pan-y' }}>
 			<div
-				className="relative flex flex-col h-[300px] w-[700px] py-12 px-10 md:px-12
+				className="relative flex flex-col h-[300px] w-full max-w-[90vw] py-8 px-6 sm:py-10 sm:px-8 md:px-12
 				rotate-0 md:h-[400px] md:w-[600px] items-center justify-center mx-auto 
-				shadow-[0_0_60px_rgba(0,0,0,0.8)] pr-3 pl-3 pt-3 pb-4 overflow-hidden rounded-3xl border border-white/10"
+				shadow-[0_0_60px_rgba(0,0,0,0.8)] pr-3 pl-3 pt-3 pb-4 overflow-visible rounded-3xl border border-white/10"
 				style={{backgroundColor: color}}
 			>
 				<span className="font-bold relative text-5xl md:text-7xl mt-5">
@@ -83,7 +83,7 @@ interface iCardSlideProps {
 
 const CardsParallax: FC<iCardSlideProps> = ({items}) => {
 	return (
-		<div className="min-h-screen">
+		<div className="min-h-[100dvh]">
 			{items.map((project, i) => {
 				return <Card key={`p_${i}`} {...project} i={i} />;
 			})}

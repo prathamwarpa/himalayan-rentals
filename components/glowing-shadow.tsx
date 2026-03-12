@@ -76,7 +76,8 @@ export function GlowingShadow({ children }: GlowingShadowButtonProps) {
           --bg-size: 1;
           width: 100%;
           max-width: 360px;
-          overflow: hidden;
+          /* allow content to breathe instead of clipping the first list item */
+          overflow: visible;
           --hue: 0;
           --hue-speed: 1;
           --rotate: 0;
@@ -102,6 +103,20 @@ export function GlowingShadow({ children }: GlowingShadowButtonProps) {
           z-index: 2;
           border-radius: var(--card-radius);
           cursor: pointer;
+        }
+
+        /* mobile tweaks: lighten card and add subtle border for contrast */
+        @media (max-width: 768px) {
+          .glow-container {
+            max-width: 90vw;
+            /* make the card noticeably lighter against the dark page */
+            --card-color: hsl(260deg 100% 15%);
+            border: 1px solid rgba(255,255,255,0.15);
+          }
+          .glow-content {
+            background: hsl(260deg 100% 15%);
+            box-shadow: 0 0 10px rgba(255,255,255,0.05);
+          }
         }
 
         .glow-container:before,
